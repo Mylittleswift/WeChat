@@ -77,7 +77,16 @@ static MHRouter *sharedInstance_ = nil;
              @"MHGenderViewModel":@"MHGenderViewController",
              @"MHPlugViewModel":@"MHPlugViewController",
              @"MHPlugDetailViewModel":@"MHPlugDetailViewController",
-             @"MHTestViewModel":@"MHTestViewController"
+             @"MHAccountSecurityViewModel":@"MHAccountSecurityViewController",
+             @"MHTestViewModel":@"MHTestViewController",
+             @"MHNotificationViewModel":@"MHNotificationViewController",
+             @"MHFreeInterruptionViewModel":@"MHFreeInterruptionViewController",
+             @"MHAboutUsViewModel":@"MHAboutUsViewController",
+             @"MHPrivacyViewModel":@"MHPrivacyViewController",
+             @"MHGeneralViewModel":@"MHGeneralViewController",
+             @"MHEmotionViewModel":@"MHEmotionViewController",
+             @"MHMomentViewModel":@"MHMomentViewController",
+             @"MHProfileInfoViewModel":@"MHProfileInfoViewController"
              };
 }
 

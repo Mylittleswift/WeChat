@@ -9,6 +9,12 @@
 #import "MHProfileViewModel.h"
 #import "MHUserInfoViewModel.h"
 #import "MHSettingViewModel.h"
+#import "MHEmotionViewModel.h"
+
+#if defined(DEBUG)||defined(_DEBUG)
+/// PS：调试模式，这里在ViewModel中引用了UIKite的东西， 但是release模式下无效，这里只是用作测试而已
+#import "MHDebugTouchView.h"
+#endif
 
 @interface MHProfileViewModel()
 /// The current `user`.
@@ -33,6 +39,7 @@
     [super initialize];
     @weakify(self);
     self.title = @"我";
+    
     /// 获取网络数据+本地数据
     RACSignal *fetchLocalDataSignal = [RACSignal return:[self fetchLocalData]];
     RACSignal *requestRemoteDataSignal = self.requestRemoteDataCommand.executionSignals.switchToLatest;
@@ -99,6 +106,7 @@
     MHCommonArrowItemViewModel *cardPackage = [MHCommonArrowItemViewModel itemViewModelWithTitle:@"卡包" icon:@"MyCardPackageIcon_25x25"];
     /// 表情
     MHCommonArrowItemViewModel *expression = [MHCommonArrowItemViewModel itemViewModelWithTitle:@"表情" icon:@"MoreExpressionShops_25x25"];
+    expression.destViewModelClass = [MHEmotionViewModel class];
     group2.itemViewModels = @[collect, album, cardPackage,expression];
     
     /// 第三组
@@ -106,8 +114,19 @@
     /// 设置
     MHCommonArrowItemViewModel *setting = [MHCommonArrowItemViewModel itemViewModelWithTitle:@"设置" icon:@"MoreSetting_25x25"];
     setting.destViewModelClass = [MHSettingViewModel class];
-    group3.itemViewModels = @[setting];
     
+#if defined(DEBUG)||defined(_DEBUG)
+    /// 调试模式
+    MHCommonArrowItemViewModel *debug = [MHCommonArrowItemViewModel itemViewModelWithTitle:@"打开/关闭调试器" icon:@"mh_profile_debug_25x25"];
+    debug.operation = ^{
+        [[MHDebugTouchView sharedInstance] setHide:![MHDebugTouchView sharedInstance].isHide];
+        [MHSharedAppDelegate.window bringSubviewToFront:[MHDebugTouchView sharedInstance]];
+    };
+    group3.itemViewModels = @[setting , debug];
+#else
+    /// 发布模式
+    group3.itemViewModels = @[setting];
+#endif
     self.dataSource = @[group0 , group1 , group2 , group3];
 }
 @end

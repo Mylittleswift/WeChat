@@ -52,6 +52,7 @@
     /// 配置键盘
     IQKeyboardManager.sharedManager.enable = self.viewModel.keyboardEnable;
     IQKeyboardManager.sharedManager.shouldResignOnTouchOutside = self.viewModel.shouldResignOnTouchOutside;
+    IQKeyboardManager.sharedManager.keyboardDistanceFromTextField = self.viewModel.keyboardDistanceFromTextField;
     
     /// 这里做友盟统计
     //    [MobClick beginLogPageView:SBPageName(self)];
@@ -106,6 +107,10 @@
 - (void)bindViewModel{
     /// set navgation title
     /// CoderMikeHe Fixed: 这里只是单纯设置导航栏的title。 不然以免self.title同时设置了navigatiItem.title, 同时又设置了tabBarItem.title
+    
+    NSLog(@"--- %@" , self.viewModel.title);
+    @weakify(self);
+    
     RAC(self.navigationItem , title) = RACObserve(self, viewModel.title);
     /// 绑定错误信息
     [self.viewModel.errors subscribeNext:^(NSError *error) {
@@ -113,7 +118,11 @@
         NSLog(@"...错误...");
     }];
     
-    /// 
+    /// 动态改变
+    [[[RACObserve(self.viewModel, interactivePopDisabled) distinctUntilChanged] deliverOnMainThread] subscribeNext:^(NSNumber * x) {
+        @strongify(self);
+        self.fd_interactivePopDisabled = x.boolValue;
+    }];
 }
 
 #pragma mark - Orientation
